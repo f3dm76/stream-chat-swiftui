@@ -115,6 +115,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     @Published public var firstUnreadMessageId: String? {
         didSet {
             if oldValue != nil && firstUnreadMessageId == nil && (channel?.unreadCount.messages ?? 0) > 0 {
+                debugChatPrint("STEP 2.2 firstUnreadMessageId didSet markRead", "channel id: \(String(describing: channel?.cid)) current unread count: \(channel?.unreadCount.messages ?? 0)")
                 channelController.markRead()
             }
         }
@@ -538,6 +539,7 @@ open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
     private func sendReadEventIfNeeded(for message: ChatMessage) {
         guard let channel, channel.unreadCount.messages > 0 else { return }
         throttler.throttle { [weak self] in
+            debugChatPrint("STEP 2.1 sendReadEventIfNeeded markRead", "channel id: \(channel.id) message text: \(message.text)")
             self?.channelController.markRead()
             DispatchQueue.main.async {
                 self?.firstUnreadMessageId = nil
@@ -846,4 +848,8 @@ extension Notification.Name {
     ///
     /// When a sheet is presented, the message cell is not reloaded.
     static let messageSheetShownNotification = Notification.Name("messageSheetShownNotification")
+}
+
+func debugChatPrint(_ items: Any...) {
+    print("bynd stream chat:", items)
 }
