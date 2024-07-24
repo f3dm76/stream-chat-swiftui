@@ -5,6 +5,7 @@
 import Combine
 import StreamChat
 import SwiftUI
+import OSLog
 
 /// View model for the `ChatChannelView`.
 open class ChatChannelViewModel: ObservableObject, MessagesDataSource {
@@ -851,5 +852,8 @@ extension Notification.Name {
 }
 
 func debugChatPrint(_ items: Any...) {
-    print("bynd stream chat:", items)
+    let log = items.reduce("") { partialResult, next in
+        partialResult + "\(next)"
+    }
+    os_log("bynd stream chat: \(log)")
 }
